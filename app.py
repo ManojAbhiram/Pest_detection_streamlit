@@ -7,20 +7,22 @@ import numpy as np
 from PIL import Image
 import os
 import gdown
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 # -------------------- MODEL SETUP ----------------------
 
 MODEL_PATH = "finalmodel3.h5"
 MODEL_URL = "https://drive.google.com/uc?id=1eZobQPU-lgm7_wLyAQQdlO6uQzU3xeSv"
 
-if not os.path.exists(MODEL_PATH):
-    with st.spinner("⬇️ Downloading large model file... Please wait (~2GB)"):
-        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
-        st.success("✅ Model downloaded successfully!")
+@st.cache_resource(show_spinner=False)
+def get_model():
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("⬇️ Downloading large model file... Please wait (~2GB)"):
+            gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+            st.success("✅ Model downloaded successfully!")
+    return load_model(MODEL_PATH)
 
-# Load the model
-model = load_model(MODEL_PATH)
+model = get_model()
 
 # -------------------- MAPPINGS ----------------------
 
